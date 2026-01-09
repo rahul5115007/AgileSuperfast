@@ -1,18 +1,75 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+const loginScenarios = [
+  {
+    name: 'Valid login',
+    username: 'rahul.joshi@yuktisolutions.com',
+    password: 'Yspl2009@',
+    rememberMe: true,
+    expected: 'success',
+  },
+  {
+    name: 'Invalid username',
+    username: 'invalid@test.com',
+    password: 'Valid@123',
+    rememberMe: false,
+    expected: 'error',
+  },
+  {
+    name: 'Invalid password',
+    username: 'validuser@test.com',
+    password: 'Wrong@123',
+    rememberMe: false,
+    expected: 'error',
+  },
+  {
+    name: 'Empty username and password',
+    username: '',
+    password: '',
+    rememberMe: false,
+    expected: 'validation',
+  },
+];
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+test.describe('PMS Login Scenarios', () => {
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  for (const scenario of loginScenarios) {
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+    test(scenario.name, async ({ page }) => {
+      await page.goto(
+        'http://pms-staging.yuktisolutions.com/Identity/Account/Login?ReturnUrl=%2F'
+      );
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+      if (scenario.username) {
+        await page.fill('input[name="Input.Email"]', scenario.username);
+      }
+
+      if (scenario.password) {
+        await page.fill('input[name="Input.Password"]', scenario.password);
+      }
+
+      if (scenario.rememberMe) {
+        await page.check('input[name="Input.RememberMe"]');
+      }
+
+      await page.click('button[type="submit"]');
+
+      if (scenario.expected === 'success') {
+        await expect(page).not.toHaveURL(/Login/);
+      }
+
+      if (scenario.expected === 'error') {
+        await expect(
+          page.locator('.validation-summary-errors')
+        ).toBeVisible();
+      }
+
+      if (scenario.expected === 'validation') {
+        await expect(
+          page.locator('input[name="Input.Email"]')
+        ).toHaveAttribute('aria-invalid', 'true');
+      }
+    });
+
+  }
 });
