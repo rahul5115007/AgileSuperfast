@@ -1,0 +1,26 @@
+{
+  "name": "agile",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahul5115007/AgileSuperfast.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rahul5115007/AgileSuperfast/issues"
+  },
+  "homepage": "https://github.com/rahul5115007/AgileSuperfast#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.6"
+  },
+  "dependencies": {
+    "excel": "^1.0.1",
+    "xlsx": "^0.18.5"
+  }
+}
